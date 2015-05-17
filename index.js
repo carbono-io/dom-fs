@@ -27,11 +27,7 @@ DomFs.prototype.getFile = function (fileRelativePath) {
 
 	var fullPath = path.join(this.root, fileRelativePath);
 
-	if (!this.files[fullPath]) {
-		this.files[fullPath] = new DomFile(fullPath);
-	}
-
-	return this.files[fullPath];
+	return new DomFile(fullPath);
 };
 
 module.exports = DomFs;
