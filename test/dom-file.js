@@ -60,6 +60,19 @@ describe('DomFile', function(){
 		})
 	})
 
+	describe('.removeElementAtXPath()', function() {
+		it ('Removes an element together with its children from the DOM', function(testDone) {
+			var file = new DomFile(__dirname + '/html-files/index.html');
+
+			file.removeElementAtXPath('/html/body/div[2]/a')
+				.then(function() {
+					file.write().then(function() {
+						testDone();
+					})
+				})
+		})
+	})
+
 	describe('.stringify(elementCallback)', function () {
 
 		it('test', function (testDone) {
