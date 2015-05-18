@@ -11,6 +11,17 @@
         <h1 data-x-path="/html/body/div/h1">titulo teste</h1>
         <h2 data-x-path="/html/body/div/h2">subtitulo teste</h2>
     </div>
+
+    <div class="list" ng-repeat="item in items" fab-source="http://localhost:3103/people" data-x-path="/html/body/div[2]">
+
+        <a class="item item-thumbnail-left" href="#" surface="" data-x-path="/html/body/div[2]/a">
+            <img src="{{ item.image }}" data-x-path="/html/body/div[2]/a/img">
+            <h2 data-x-path="/html/body/div[2]/a/h2">{{ item.title }}</h2>
+            <p data-x-path="/html/body/div[2]/a/p">{{ item.description }}</p>
+        </a>
+
+    </div>
+
     <div id="lalala" data-x-path="/html/body/div"></div>
 </body>
 

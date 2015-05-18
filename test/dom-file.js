@@ -47,6 +47,19 @@ describe('DomFile', function(){
 		})
 	})
 
+	describe('.changeSource()', function() {
+		it ('Changes the fab source collection name', function(testDone) {
+			var file  = new DomFile(__dirname + '/html-files/index.html');
+
+			file.changeSource('gallery_123456789', 'people')
+				.then(function() {
+					file.write().then(function() {
+						testDone();
+					});
+				});
+		})
+	})
+
 	describe('.stringify(elementCallback)', function () {
 
 		it('test', function (testDone) {

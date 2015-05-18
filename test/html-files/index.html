@@ -9,5 +9,16 @@
 		<h1>titulo teste</h1>
 		<h2>subtitulo teste</h2>
 	</div>
+
+	<div class="list" ng-repeat="item in items" fab-source="http://localhost:3103/gallery_123456789">
+
+	    <a class="item item-thumbnail-left" href="#" surface>
+	      <img src="{{ item.image }}">
+	      <h2>{{ item.title }}</h2>
+	      <p>{{ item.description }}</p>
+	    </a>
+
+	</div>
+
 </body>
 </html>
