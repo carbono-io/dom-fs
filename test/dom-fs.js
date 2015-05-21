@@ -22,4 +22,16 @@ describe('DomFs', function(){
 			})
 			.done()
 	});
+
+	it ('.createNewPage()', function(testDone) {
+		var dfs = new DomFs(path.join(__dirname, 'www'));
+		var createPagePromise = dfs.createNewPage({name: 'lista_de_blusas', label: 'lista de blusas'});
+
+		createPagePromise.then(function() {
+			testDone();
+		}, function(err) {
+			console.log(err);
+			testDone();
+		});
+	});
 });
