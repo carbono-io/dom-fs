@@ -42,7 +42,7 @@ DomFs.prototype.getFile = function (fileRelativePath) {
 DomFs.prototype.createNewPage = function(pageData) {
 	var deferred = q.defer();
 
-	var dir = path.join(this.root, 'templates');
+	var dir = path.join(this.root, 'www', 'templates');
 
 	/* 
 	* First we need to make sure that there is a template folder inside
@@ -56,7 +56,7 @@ DomFs.prototype.createNewPage = function(pageData) {
 	 * Then, we'll create a new file with a default content.
 	 */
 	var content = '<ion-view view-title=\"' + pageData.label + '\"><ion-content></ion-content></ion-view>';
-	fs.writeFile(path.join(this.root, 'templates', pageData.name + '.html'), content, function(err) {
+	fs.writeFile(path.join(this.root, 'www', 'templates', pageData.name + '.html'), content, function(err) {
 		if (err) {
 			deferred.reject(err);
 		}
