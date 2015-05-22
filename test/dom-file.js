@@ -47,6 +47,27 @@ describe('DomFile', function(){
 		})
 	})
 
+	describe('.removeColumnContent()', function() {
+		it('Removes the content of a given column', function(testDone) {
+			var file = new DomFile(__dirname + '/html-files/index.html');
+
+			file.removeColumnContent('name')
+				.then(function() {
+					console.log('DENTRO THEN');
+					file.write().then(function() {
+						testDone();
+					}, function(err) {
+						console.log(JSON.stringify(err));
+					})
+					.done();
+				}, function(err) {
+					console.log('Something went wrong');
+					console.log(JSON.stringify(err));
+				}).done()
+
+		})
+	})
+
 	describe('.changeSource()', function() {
 		it ('Changes the fab source collection name', function(testDone) {
 			var file  = new DomFile(__dirname + '/html-files/index.html');

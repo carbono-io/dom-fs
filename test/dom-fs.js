@@ -24,7 +24,7 @@ describe('DomFs', function(){
 	});
 
 	it ('.createNewPage()', function(testDone) {
-		var dfs = new DomFs(path.join(__dirname, 'www'));
+		var dfs = new DomFs(__dirname);
 		var createPagePromise = dfs.createNewPage({name: 'lista_de_blusas', label: 'lista de blusas'});
 
 		createPagePromise.then(function() {

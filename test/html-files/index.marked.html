@@ -15,6 +15,14 @@
     <div class="list" ng-repeat="item in items" fab-source="http://localhost:3103/people" data-x-path="/html/body/div[2]">
 
 
+        <h1 data-x-path="/html/body/div[2]/h1">{{item.mother}}</h1>
+        <p data-x-path="/html/body/div[2]/p">{{item.father}}</p>
+        <p data-x-path="/html/body/div[2]/p[2]">{{item.age}}</p>
+        <h2 data-x-path="/html/body/div[2]/h2">{{item.height}}</h2>
+        <p data-x-path="/html/body/div[2]/p[3]">{{item.weight}}</p>
+        <h1 data-x-path="/html/body/div[2]/h1[2]">{{item.address}}</h1>
+        <p data-x-path="/html/body/div[2]/p[4]">{{item.eye_color}}</p>
+        <h2 data-x-path="/html/body/div[2]/h2[2]">{{item.heart_rate}}</h2>
 
     </div>
 
