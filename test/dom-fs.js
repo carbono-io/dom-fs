@@ -8,19 +8,13 @@ var DomFs = require('../');
 
 
 describe('DomFs', function(){
-	it('.getFile()', function(testDone) {
+	it('.getFile()', function() {
 
 		var dfs = new DomFs(path.join(__dirname, 'html-files'));
 
 		var file = dfs.getFile('index.html');
 
-		file.buildDom()
-			.then(function (dom) {
-				console.log(dom);
-
-				testDone();
-			})
-			.done()
+		file.dom.should.be.type('object');
 	});
 
 	it ('.createNewPage()', function(testDone) {

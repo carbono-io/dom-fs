@@ -7,43 +7,32 @@ var DomFile = require('../lib/dom-file');
 
 describe('DomFile', function(){
 	describe('.buildDom()', function() {
-		it('build the dom', function(testDone) {
+		it('build the dom', function() {
 
 
 			var file = new DomFile(__dirname + '/html-files/index.html');
 
-			file.buildDom()
-				.then(function (dom) {
+			var dom = file.dom;
+			// is object
+			dom.should.be.type('object')
 
-					// is object
-					dom.should.be.type('object')
-
-					// is array
-					dom.should.have.property('length');
-
-					testDone();
-
-				}).fail(testDone);
+			// is array
+			dom.should.have.property('length');
 
 		})
 	})
 
-	describe('.getElementAtXPath()', function() {
-		it('retrieves the element at given xPath', function(testDone) {
+	describe('.getElementByXPath()', function() {
+		it('retrieves the element at given xPath', function() {
 
 
 			var file = new DomFile(__dirname + '/html-files/index.html');
 
-			file.getElementAtXPath('/html/head')
-				.then(function (element) {
-					element.should.be.type('object')
-					element.type.should.eql('tag');
-					element.name.should.eql('head');
-
-					testDone();
-
-				}).fail(testDone);
-
+			var element = file.getElementByXPath('/html/head');
+			
+			element.should.be.type('object')
+			element.type.should.eql('tag');
+			element.name.should.eql('head');
 		})
 	})
 
@@ -96,7 +85,7 @@ describe('DomFile', function(){
 
 	describe('.stringify(elementCallback)', function () {
 
-		it('test', function (testDone) {
+		it('test', function () {
 
 			var file = new DomFile(__dirname + '/html-files/index.html');
 
@@ -107,26 +96,19 @@ describe('DomFile', function(){
 				}
 			}
 
-			file.stringify(elementCallback)
-				.then(function (dirtyHtml) {
+			var dirtyHtml = file.stringify(elementCallback);
 
-					// console.log(dirtyHtml);
-				})
-				.then(function () {
+			// console.log(dirtyHtml);
+			
+			var cleanHtml = file.stringify();
 
-					return file.stringify();
-				})
-				.then(function (cleanHtml) {
-					// console.log(cleanHtml);
+			// console.log(cleanHtml)
 
-					testDone();
-				})
-				.done();
 		});
 	});
 
 	describe('.write(options)', function () {
-		it('write to another file', function (testDone) {
+		it('write to another file', function () {
 
 			var file = new DomFile(__dirname + '/html-files/index.html');
 
@@ -147,58 +129,35 @@ describe('DomFile', function(){
 				}
 			};
 
-			file.write(writeOptions).then(function () {
-				testDone();
-			})
-			.done();
+			file.write(writeOptions);
 
 		});
 	})
 })
 
 describe('DomElement', function () {
-	it('.editAttribute', function (testDone) {
+	it('.editAttribute', function () {
 		var file = new DomFile(__dirname + '/html-files/index.html');
 
-		file.getElementAtXPath('/html/body/h1')
-			.then(function (element) {
-
-				element.editAttribute('data-some-attribute', 'some value');
-
-				return element;
-			})
-			// separate test from logic
-			.then(function (element) {
-
-				element.attribs['data-some-attribute'].should.eql('some value');
-
-				testDone();
-			})
-			.done();
+		var element = file.getElementByXPath('/html/body/h1');
+		
+		element.editAttribute('data-some-attribute', 'some value');
+		element.attribs['data-some-attribute'].should.eql('some value');
 	});
 
-	it('.addChildren(element)', function (testDone) {
+	it('.addChildren(element)', function () {
 		var file = new DomFile(__dirname + '/html-files/index.html');
 
-		file.getElementAtXPath('/html/body/div')
-			.then(function (element) {
-				element.addChildren({
-					type: 'tag',
-					name: 'p',
-				})
+		var element = file.getElementByXPath('/html/body/div');
 
-				return element;
-			})
-			.then(function (element) {
-
-				_.last(element.children).name.should.eql('p');
-
-				testDone();
-			})
-			.done();
+		element.addChildren({
+			type: 'tag',
+			name: 'p',
+		});
+		_.last(element.children).name.should.eql('p');
 	});
 
-	it('.addChildren("<div><h1>ola</h1><p>falou</p></div>")', function (testDone) {
+	it('.addChildren("<div><h1>ola</h1><p>falou</p></div>")', function () {
 		var file = new DomFile(__dirname + '/html-files/index.html');
 
 
@@ -209,21 +168,19 @@ describe('DomElement', function () {
 			'</div>'
 		].join('');
 
-		file.getElementAtXPath('/html/body/div')
-			.then(function (element) {
-				element.addChildren(htmlString);
+		var element = file.getElementByXPath('/html/body/div');
 
-				var div = _.last(element.children),
-					h1  = _.first(div.children),
-					p   = _.last(div.children);
 
-				div.name.should.eql('div');
-				h1.name.should.eql('h1');
-				p.name.should.eql('p');
+		element.addChildren(htmlString);
 
-				testDone();
-			})
-			.done()
+		var div = _.last(element.children),
+			h1  = _.first(div.children),
+			p   = _.last(div.children);
+
+		div.name.should.eql('div');
+		h1.name.should.eql('h1');
+		p.name.should.eql('p');
+
 	})
 
 	it('.addChildren(element, { before: referenceElement })', function (testDone) {
@@ -231,10 +188,10 @@ describe('DomElement', function () {
 		var file = new DomFile(__dirname + '/html-files/index.html');
 
 		// get the reference element 
-		var referenceElementPromise = file.getElementAtXPath('/html/body/div/h2');
+		var referenceElementPromise = file.getElementByXPath('/html/body/div/h2');
 
 		// get the parent element
-		var parentElementPromise = file.getElementAtXPath('/html/body/div');
+		var parentElementPromise = file.getElementByXPath('/html/body/div');
 
 
 		q.all([referenceElementPromise, parentElementPromise])
@@ -256,12 +213,12 @@ describe('DomElement', function () {
 
 				// console.log(addedElementIndex);
 
-				// console.log(parent.getChildIndex(reference))
+				// console.log(parent._getChildIndex(reference))
 
 				// console.log(_.pluck(parent.children, 'type'));
 				// console.log(_.pluck(parent.children, 'name'))
 
-				addedElementIndex.should.eql(parent.getChildIndex(reference) - 1);
+				addedElementIndex.should.eql(parent._getChildIndex(reference) - 1);
 
 				testDone();
 			})
@@ -270,35 +227,31 @@ describe('DomElement', function () {
 
 	});
 
-	it('.addChildren(element, { after: referenceElement })', function (testDone) {
+	it('.addChildren(elements, { after: referenceElement })', function () {
 		var file = new DomFile(__dirname + '/html-files/index.html');
 
 		// get parent
-		var parent = file.getElementAtXPath('/html/body/div'),
+		var parent = file.getElementByXPath('/html/body/div'),
 		// reference
-			reference = file.getElementAtXPath('/html/body/div/h1');
+			reference = file.getElementByXPath('/html/body/div/h1');
 
-		q.all([parent, reference])
-			.then(function (elements) {
+		parent.addChildren('<a id="teste"></a>', {
+			after: reference
+		});
 
-				var parent    = elements[0],
-					reference = elements[1];
+		var addedElementIndex = _.findIndex(parent.children, function (el) {
 
-				parent.addChildren('<a id="teste"></a>', {
-					after: reference
-				});
+			if (el.type === 'tag') {
+				return el.attribs.id === 'teste';
+			}
+		});
 
-				var addedElementIndex = _.findIndex(parent.children, function (el) {
-
-					if (el.type === 'tag') {
-						return el.attribs.id === 'teste';
-					}
-				});
-
-				addedElementIndex.should.eql(parent.getChildIndex(reference) + 1);
-
-				testDone();
-			})
-			.done()
+		addedElementIndex.should.eql(parent._getChildIndex(reference) + 1);
 	});
+
+	it('.removeChildren(elements)', function () {
+		var file = new DomFile(__dirname + '/html-files/index.html');
+
+		
+	})
 })
