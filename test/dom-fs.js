@@ -14,6 +14,6 @@ describe('DomFs', function(){
 
 		var file = dfs.getFile('index.html');
 
-		console.log(file)
+		file.dom.should.be.type('object');
 	});
 });

@@ -180,7 +180,7 @@ describe('DomElement', function () {
 
 	});
 
-	it('.addChildren(element, { after: referenceElement })', function () {
+	it('.addChildren(elements, { after: referenceElement })', function () {
 		var file = new DomFile(__dirname + '/html-files/index.html');
 
 		// get parent
@@ -201,4 +201,10 @@ describe('DomElement', function () {
 
 		addedElementIndex.should.eql(parent._getChildIndex(reference) + 1);
 	});
+
+	it('.removeChildren(elements)', function () {
+		var file = new DomFile(__dirname + '/html-files/index.html');
+
+		
+	})
 })
