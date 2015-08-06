@@ -1,8 +1,8 @@
 var path = require('path');
 
-var should = require('should'),
-	_      = require('lodash'),
-	q      = require('q');
+var should = require('should');
+var _      = require('lodash');
+var q      = require('q');
 
 var DomFs = require('../');
 
