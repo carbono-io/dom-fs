@@ -17,6 +17,9 @@ var DomFs = function (root, options) {
     this.root = root;
 
     // object to hold the file
+    // TODO: DomFs is not keeping references to open (and possibly edited)
+    // DomFiles. With this, all further calls to getFile of a modified and
+    // unsaved file will return file objects with unmodified content.
     this.files = {};
 };
 
