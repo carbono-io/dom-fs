@@ -13,11 +13,11 @@ var DomFile = require('./lib/dom-file');
  */
 var DomFs = function (root, options) {
 
-	// root of the filesystem
-	this.root = root;
+    // root of the filesystem
+    this.root = root;
 
-	// object to hold the file
-	this.files = {};
+    // object to hold the file
+    this.files = {};
 };
 
 /**
@@ -27,41 +27,41 @@ var DomFs = function (root, options) {
  */
 DomFs.prototype.getFile = function (fileRelativePath) {
 
-	var fullPath = path.join(this.root, fileRelativePath);
+    var fullPath = path.join(this.root, fileRelativePath);
 
-	return new DomFile(fullPath);
+    return new DomFile(fullPath);
 };
 
 /**
  * Creates a new page in the templates folder
  */
 DomFs.prototype.createNewPage = function(pageData) {
-	var deferred = q.defer();
+    var deferred = q.defer();
 
-	var dir = path.join(this.root, 'www', 'templates');
+    var dir = path.join(this.root, 'www', 'templates');
 
-	/* 
-	* First we need to make sure that there is a template folder inside
-	* the project's root folder.
-	*/
-	if (!fs.existsSync(dir)){
-	    fs.mkdirSync(dir);
-	}
+    /* 
+    * First we need to make sure that there is a template folder inside
+    * the project's root folder.
+    */
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
 
-	/*
-	 * Then, we'll create a new file with a default content.
-	 */
-	var content = '<ion-view view-title=\"' + pageData.label + '\"><ion-content></ion-content></ion-view>';
-	fs.writeFile(path.join(this.root, 'www', 'templates', pageData.name + '.html'), content, function(err) {
-		if (err) {
-			deferred.reject(err);
-		}
+    /*
+     * Then, we'll create a new file with a default content.
+     */
+    var content = '<ion-view view-title=\"' + pageData.label + '\"><ion-content></ion-content></ion-view>';
+    fs.writeFile(path.join(this.root, 'www', 'templates', pageData.name + '.html'), content, function(err) {
+        if (err) {
+            deferred.reject(err);
+        }
 
-		deferred.resolve();
-	});
+        deferred.resolve();
+    });
 
 
-	return deferred.promise;
+    return deferred.promise;
 }
 
 module.exports = DomFs;

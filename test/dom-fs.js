@@ -8,24 +8,24 @@ var DomFs = require('../');
 
 
 describe('DomFs', function(){
-	it('.getFile()', function() {
+    it('.getFile()', function() {
 
-		var dfs = new DomFs(path.join(__dirname, 'html-files'));
+        var dfs = new DomFs(path.join(__dirname, 'html-files'));
 
-		var file = dfs.getFile('index.html');
+        var file = dfs.getFile('index.html');
 
-		file.dom.should.be.type('object');
-	});
+        file.dom.should.be.type('object');
+    });
 
-	it ('.createNewPage()', function(testDone) {
-		var dfs = new DomFs(__dirname);
-		var createPagePromise = dfs.createNewPage({name: 'lista_de_blusas', label: 'lista de blusas'});
+    it ('.createNewPage()', function(testDone) {
+        var dfs = new DomFs(__dirname);
+        var createPagePromise = dfs.createNewPage({name: 'lista_de_blusas', label: 'lista de blusas'});
 
-		createPagePromise.then(function() {
-			testDone();
-		}, function(err) {
-			console.log(err);
-			testDone();
-		});
-	});
+        createPagePromise.then(function() {
+            testDone();
+        }, function(err) {
+            console.log(err);
+            testDone();
+        });
+    });
 });
