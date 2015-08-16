@@ -64,4 +64,5 @@ DomFs.prototype.createNewPage = function(pageData) {
 	return deferred.promise;
 }
 
+// Export the class
 module.exports = DomFs;
