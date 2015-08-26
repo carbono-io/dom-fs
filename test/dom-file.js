@@ -34,45 +34,11 @@ describe('DomFile', function(){
             element.type.should.eql('tag');
             element.name.should.eql('head');
         })
-    })
+    });
 
-    describe('.removeColumnContent()', function() {
-        it('Removes the content of a given column', function(testDone) {
-            var file = new DomFile(__dirname + '/html-files/index.html');
-
-            file.removeColumnContent('name')
-                .then(function() {
-                    console.log('DENTRO THEN');
-                    file.write().then(function() {
-                        testDone();
-                    }, function(err) {
-                        console.log(JSON.stringify(err));
-                    })
-                    .done();
-                }, function(err) {
-                    console.log('Something went wrong');
-                    console.log(JSON.stringify(err));
-                }).done()
-
-        })
-    })
-
-    describe('.changeSource()', function() {
-        it ('Changes the fab source collection name', function(testDone) {
-            var file  = new DomFile(__dirname + '/html-files/index.html');
-
-            file.changeSource('gallery_123456789', 'people')
-                .then(function() {
-                    file.write().then(function() {
-                        testDone();
-                    });
-                });
-        })
-    })
-
-    describe('.removeElementAtXPath()', function() {
-        it ('Removes an element together with its children from the DOM', function(testDone) {
-            var file = new DomFile(__dirname + '/html-files/index.html');
+	describe.skip('.removeElementAtXPath()', function() {
+		it('Removes an element together with its children from the DOM', function(testDone) {
+			var file = new DomFile(__dirname + '/html-files/index.html');
 
             file.removeElementAtXPath('/html/body/div[2]/a')
                 .then(function() {
@@ -80,8 +46,8 @@ describe('DomFile', function(){
                         testDone();
                     })
                 })
-        })
-    })
+        });
+    });
 
     describe('.stringify(elementCallback)', function () {
 
@@ -133,7 +99,7 @@ describe('DomFile', function(){
 
         });
     })
-})
+});
 
 describe('DomElement', function () {
     it('.editAttribute', function () {
@@ -254,4 +220,4 @@ describe('DomElement', function () {
 
         
     })
-})
+});

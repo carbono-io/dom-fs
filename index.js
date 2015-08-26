@@ -16,10 +16,11 @@ var DomFs = function (root, options) {
     // root of the filesystem
     this.root = root;
 
-    // object to hold the file
     // TODO: DomFs is not keeping references to open (and possibly edited)
     // DomFiles. With this, all further calls to getFile of a modified and
-    // unsaved file will return file objects with unmodified content.
+    // unsaved file will return file objects with unmodified content
+    
+    // object to hold the file
     this.files = {};
 };
 
@@ -67,4 +68,5 @@ DomFs.prototype.createNewPage = function(pageData) {
     return deferred.promise;
 }
 
+// Export the class
 module.exports = DomFs;
