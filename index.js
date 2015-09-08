@@ -12,25 +12,27 @@ var DomFile = require('./lib/dom-file');
  */
 var DomFs = function (root, options) {
 
+    // @todo validate if root is a valid directory.
     this.root = root;
     this.options = options;
-
-    // TODO: DomFs is not keeping references to open (and possibly edited)
-    // DomFiles. With this, all further calls to getFile of a modified and
-    // unsaved file will return file objects with unmodified content
 
     this.files = {};
 };
 
 /**
  * Creates a file object
- * @param  {string} fileRelativePath [description]
+ * @param {string} fileRelativePath [description]
+ * @param {?boolean} forceReload - forces file to be loaded from disk, even if
+ *                      it was already in memory.
  */
-DomFs.prototype.getFile = function (fileRelativePath) {
+DomFs.prototype.getFile = function (fileRelativePath, forceReload) {
+    forceReload = forceReload || false;
 
-    var fullPath = path.join(this.root, fileRelativePath);
-
-    return new DomFile(fullPath);
+    if (forceReload || !(fileRelativePath in this.files)) {
+        var fullPath = path.join(this.root, fileRelativePath);
+        this.files[fileRelativePath] = new DomFile(fullPath);
+    }
+    return this.files[fileRelativePath];
 };
 
 /**
@@ -73,5 +75,10 @@ DomFs.prototype.createNewPage = function (pageData) {
     return deferred.promise;
 };
 
-// Export the class
+DomFs.prototype.saveState = function () {
+    for (var file in this.files) {
+        this.files[file].write();
+    }
+};
+
 module.exports = DomFs;
