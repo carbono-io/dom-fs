@@ -28,4 +28,20 @@ describe('DomFs', function () {
             done();
         });
     });
+
+    it('Must emit notifications on file updates', function (done) {
+        var dfs = new DomFs(path.join(__dirname, 'html-files'));
+        var filename = 'index.html';
+        var xpath = '/html/head';
+
+        dfs.on('update', function (data) {
+            data.file.should.eql(filename);
+            data.xpath.should.eql(xpath);
+            done();
+        });
+
+        var file = dfs.getFile(filename);
+        var element = file.getElementByXPath(xpath);
+        element.addChildren({type: 'tag', name: 'p'});
+    });
 });

@@ -2,6 +2,8 @@
 var path = require('path');
 var fs = require('fs');
 var q = require('q');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
 var DomFile = require('./lib/dom-file');
 
@@ -17,7 +19,11 @@ var DomFs = function (root, options) {
     this.options = options;
 
     this.files = {};
+
+    EventEmitter.call(this);
 };
+
+util.inherits(DomFs, EventEmitter);
 
 /**
  * Creates a file object
@@ -30,7 +36,17 @@ DomFs.prototype.getFile = function (fileRelativePath, forceReload) {
 
     if (forceReload || !(fileRelativePath in this.files)) {
         var fullPath = path.join(this.root, fileRelativePath);
-        this.files[fileRelativePath] = new DomFile(fullPath);
+        var file = new DomFile(fullPath, this.notifyUpdate.bind(this));
+        this.files[fileRelativePath] = file;
+
+        // @todo
+        // It's probably better to somehow keep the reference to
+        // the registered listeners, so that when forceReload is set, we
+        // can unregister the listener.
+
+        file.on('update', function (ev) {
+            this.notifyUpdate(fileRelativePath, ev.xpath, ev.content);
+        }.bind(this));
     }
     return this.files[fileRelativePath];
 };
@@ -75,10 +91,30 @@ DomFs.prototype.createNewPage = function (pageData) {
     return deferred.promise;
 };
 
+/**
+ * Saves current state of all open files to disk.
+ */
 DomFs.prototype.saveState = function () {
     for (var file in this.files) {
         this.files[file].write();
     }
+};
+
+/**
+ * Creates an event to notify update in a file.
+ * @param {string} file - file in which the update occurred.
+ * @param {string} xpath - xpath of the parent element under which the
+ *                  update occurred.
+ * @param {?(string|Object)} content - content of the update.
+ */
+DomFs.prototype.notifyUpdate = function (file, xpath, content) {
+    var updateEvent = {
+        file: file,
+        xpath: xpath,
+        content: content,
+    };
+
+    this.emit('update', updateEvent);
 };
 
 module.exports = DomFs;

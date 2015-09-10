@@ -86,26 +86,55 @@ describe('DomElement', function () {
     it('.editAttribute', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
 
-        var element = file.getElementByXPath('/html/body/h1');
+        var notified = false;
+
+        var xpath = '/html/body/h1';
+
+        file.on('update', function (data) {
+            data.xpath.should.eql(xpath);
+            notified = true;
+        });
+
+        var element = file.getElementByXPath(xpath);
 
         element.editAttribute('data-some-attribute', 'some value');
         element.attribs['data-some-attribute'].should.eql('some value');
+        notified.should.be.true;
     });
 
     it('.addChildren(element)', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
 
-        var element = file.getElementByXPath('/html/body/div');
+        var notified = false;
+
+        var xpath = '/html/body/div';
+
+        file.on('update', function (data) {
+            data.xpath.should.eql(xpath);
+            notified = true;
+        });
+
+        var element = file.getElementByXPath(xpath);
 
         element.addChildren({
             type: 'tag',
             name: 'p',
         });
         _.last(element.children).name.should.eql('p');
+        notified.should.be.true;
     });
 
     it('.addChildren("<div><h1>ola</h1><p>falou</p></div>")', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var notified = false;
+
+        var xpath = '/html/body/div';
+
+        file.on('update', function (data) {
+            data.xpath.should.eql(xpath);
+            notified = true;
+        });
 
         var htmlString = [
             '<div>',
@@ -114,7 +143,7 @@ describe('DomElement', function () {
             '</div>',
         ].join('');
 
-        var element = file.getElementByXPath('/html/body/div');
+        var element = file.getElementByXPath(xpath);
 
         element.addChildren(htmlString);
 
@@ -125,11 +154,20 @@ describe('DomElement', function () {
         div.name.should.eql('div');
         h1.name.should.eql('h1');
         p.name.should.eql('p');
+        notified.should.be.true;
     });
 
     it('.addChildren(element, { before: referenceElement })', function (done) {
 
         var file = new DomFile(__dirname + '/html-files/index.html');
+        var notified = false;
+
+        var xpath = '/html/body/div';
+
+        file.on('update', function (data) {
+            data.xpath.should.eql(xpath);
+            notified = true;
+        });
 
         var refElementPromise = file.getElementByXPath('/html/body/div/h2');
         var parElementPromise = file.getElementByXPath('/html/body/div');
@@ -151,6 +189,7 @@ describe('DomElement', function () {
                 });
 
                 addedElIndex.should.eql(parent._getChildIndex(reference) - 1);
+                notified.should.be.true;
 
                 done();
             })
@@ -159,6 +198,14 @@ describe('DomElement', function () {
 
     it('.addChildren(elements, { after: referenceElement })', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
+        var notified = false;
+
+        var xpath = '/html/body/div';
+
+        file.on('update', function (data) {
+            data.xpath.should.eql(xpath);
+            notified = true;
+        });
 
         var parent = file.getElementByXPath('/html/body/div');
         var reference = file.getElementByXPath('/html/body/div/h1');
@@ -174,6 +221,7 @@ describe('DomElement', function () {
         });
 
         addedElementIndex.should.eql(parent._getChildIndex(reference) + 1);
+        notified.should.be.true;
     });
 
     it('.removeChildren(elements)', function () {
