@@ -16,6 +16,19 @@ describe('DomFile', function () {
         });
     });
 
+    describe('.getElementByUuid()', function () {
+        it('retrieves the element referenced by a given uuid', function () {
+            var file = new DomFile(__dirname + '/html-files/index.html');
+            var uuid = file.dom[0].uuid;
+
+            var element = file.getElementByUuid(uuid);
+            element.should.be.an('object');
+            element.type.should.eql('tag');
+            element.name.should.eql('html');
+            element.uuid.should.eql(uuid);
+        });
+    });
+
     describe('.getElementByXPath()', function () {
         it('retrieves the element at given xPath', function () {
             var file = new DomFile(__dirname + '/html-files/index.html');
@@ -120,6 +133,7 @@ describe('DomElement', function () {
             type: 'tag',
             name: 'p',
         });
+        _.last(element.children).should.have.ownProperty('uuid');
         _.last(element.children).name.should.eql('p');
         notified.should.be.true;
     });
@@ -151,8 +165,11 @@ describe('DomElement', function () {
         var h1  = _.first(div.children);
         var p   = _.last(div.children);
 
+        div.should.have.ownProperty('uuid');
         div.name.should.eql('div');
+        h1.should.have.ownProperty('uuid');
         h1.name.should.eql('h1');
+        p.should.have.ownProperty('uuid');
         p.name.should.eql('p');
         notified.should.be.true;
     });
@@ -188,6 +205,7 @@ describe('DomElement', function () {
                     }
                 });
 
+                parent.children[addedElIndex].should.have.ownProperty('uuid');
                 addedElIndex.should.eql(parent._getChildIndex(reference) - 1);
                 notified.should.be.true;
 
@@ -220,6 +238,7 @@ describe('DomElement', function () {
             }
         });
 
+        parent.children[addedElementIndex].should.have.ownProperty('uuid');
         addedElementIndex.should.eql(parent._getChildIndex(reference) + 1);
         notified.should.be.true;
     });

@@ -3,6 +3,8 @@ require('chai').should();
 var _      = require('lodash');
 var q      = require('q');
 
+var walkDom = require('../lib/dom-file/auxiliary.js').walkDom;
+
 var DomFile = require('../lib/dom-file');
 
 describe('DomElement', function () {
@@ -103,5 +105,19 @@ describe('DomElement', function () {
     });
 
     it('.removeChildren(elements)', function () {
+    });
+
+    it('All tag elements should have UUIDs', function (done) {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var re = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/;
+
+        walkDom(file.dom, function (el) {
+            if (el.type === 'tag') {
+                el.uuid.should.match(re);
+            }
+        });
+
+        done();
     });
 });
