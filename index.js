@@ -45,7 +45,7 @@ DomFs.prototype.getFile = function (fileRelativePath, forceReload) {
         // can unregister the listener.
 
         file.on('update', function (ev) {
-            this.notifyUpdate(fileRelativePath, ev.xpath, ev.content);
+            this.notifyUpdate(fileRelativePath, ev.element);
         }.bind(this));
     }
     return this.files[fileRelativePath];
@@ -103,15 +103,13 @@ DomFs.prototype.saveState = function () {
 /**
  * Creates an event to notify update in a file.
  * @param {string} file - file in which the update occurred.
- * @param {string} xpath - xpath of the parent element under which the
  *                  update occurred.
- * @param {?(string|Object)} content - content of the update.
+ * @param {?(string|Object)} element - element within which the update happened.
  */
-DomFs.prototype.notifyUpdate = function (file, xpath, content) {
+DomFs.prototype.notifyUpdate = function (file, element) {
     var updateEvent = {
         file: file,
-        xpath: xpath,
-        content: content,
+        element: element,
     };
 
     this.emit('update', updateEvent);

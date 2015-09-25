@@ -120,4 +120,28 @@ describe('DomElement', function () {
 
         done();
     });
+
+    it('Elements should be able to stringify their subtrees.', function (done) {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var html = file.getElementByXPath('/html');
+
+        html.stringify().should.eql(file.stringify());
+
+        done();
+    });
+
+    it('Element\'s stringify method should accept callback.', function (done) {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var html = file.getElementByXPath('/html');
+
+        html.stringify(function (el) {
+            if (el.type === 'tag') {
+                el.attribs.uuid = el.uuid;
+            }
+        });
+
+        done();
+    });
 });

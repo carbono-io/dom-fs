@@ -103,12 +103,12 @@ describe('DomElement', function () {
 
         var xpath = '/html/body/h1';
 
+        var element = file.getElementByXPath(xpath);
+
         file.on('update', function (data) {
-            data.xpath.should.eql(xpath);
+            data.element.uuid.should.eql(element.uuid);
             notified = true;
         });
-
-        var element = file.getElementByXPath(xpath);
 
         element.editAttribute('data-some-attribute', 'some value');
         element.attribs['data-some-attribute'].should.eql('some value');
@@ -122,12 +122,12 @@ describe('DomElement', function () {
 
         var xpath = '/html/body/div';
 
+        var element = file.getElementByXPath(xpath);
+
         file.on('update', function (data) {
-            data.xpath.should.eql(xpath);
+            data.element.uuid.should.eql(element.uuid);
             notified = true;
         });
-
-        var element = file.getElementByXPath(xpath);
 
         element.addChildren({
             type: 'tag',
@@ -143,13 +143,6 @@ describe('DomElement', function () {
 
         var notified = false;
 
-        var xpath = '/html/body/div';
-
-        file.on('update', function (data) {
-            data.xpath.should.eql(xpath);
-            notified = true;
-        });
-
         var htmlString = [
             '<div>',
                 '<h1>ola</h1>',
@@ -157,7 +150,12 @@ describe('DomElement', function () {
             '</div>',
         ].join('');
 
-        var element = file.getElementByXPath(xpath);
+        var element = file.getElementByXPath('/html/body/div');
+
+        file.on('update', function (data) {
+            data.element.uuid.should.eql(element.uuid);
+            notified = true;
+        });
 
         element.addChildren(htmlString);
 
@@ -179,13 +177,6 @@ describe('DomElement', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
         var notified = false;
 
-        var xpath = '/html/body/div';
-
-        file.on('update', function (data) {
-            data.xpath.should.eql(xpath);
-            notified = true;
-        });
-
         var refElementPromise = file.getElementByXPath('/html/body/div/h2');
         var parElementPromise = file.getElementByXPath('/html/body/div');
 
@@ -194,6 +185,11 @@ describe('DomElement', function () {
 
                 var parent    = elements[1];
                 var reference = elements[0];
+
+                file.on('update', function (data) {
+                    data.element.uuid.should.eql(parent.uuid);
+                    notified = true;
+                });
 
                 parent.addChildren('<div id="teste"></div>', {
                     before: reference,
@@ -218,15 +214,13 @@ describe('DomElement', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
         var notified = false;
 
-        var xpath = '/html/body/div';
-
-        file.on('update', function (data) {
-            data.xpath.should.eql(xpath);
-            notified = true;
-        });
-
         var parent = file.getElementByXPath('/html/body/div');
         var reference = file.getElementByXPath('/html/body/div/h1');
+
+        file.on('update', function (data) {
+            data.element.uuid.should.eql(parent.uuid);
+            notified = true;
+        });
 
         parent.addChildren('<a id="teste"></a>', {
             after: reference,
