@@ -34,14 +34,15 @@ describe('DomFs', function () {
         var filename = 'index.html';
         var xpath = '/html/head';
 
+        var file = dfs.getFile(filename);
+        var element = file.getElementByXPath(xpath);
+
         dfs.on('update', function (data) {
             data.file.should.eql(filename);
-            data.xpath.should.eql(xpath);
+            data.element.uuid.should.eql(element.uuid);
             done();
         });
 
-        var file = dfs.getFile(filename);
-        var element = file.getElementByXPath(xpath);
         element.addChildren({type: 'tag', name: 'p'});
     });
 });
