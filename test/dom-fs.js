@@ -43,6 +43,6 @@ describe('DomFs', function () {
             done();
         });
 
-        element.addChildren({type: 'tag', name: 'p'});
+        element.addChild('<div></div>');
     });
 });

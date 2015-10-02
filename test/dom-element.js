@@ -11,26 +11,24 @@ describe('DomElement', function () {
     it('.editAttribute', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
 
+        var notified = false;
+
         var element = file.getElementByXPath('/html/body/h1');
+
+        file.on('update', function (data) {
+            data.element.uuid.should.eql(element.uuid);
+            notified = true;
+        });
 
         element.editAttribute('data-some-attribute', 'some value');
         element.attribs['data-some-attribute'].should.eql('some value');
+        notified.should.be.true;
     });
 
-    it('.addChildren(element)', function () {
+    it('.addChild("<div><h1>ola</h1><p>falou</p></div>")', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
 
-        var element = file.getElementByXPath('/html/body/div');
-
-        element.addChildren({
-            type: 'tag',
-            name: 'p',
-        });
-        _.last(element.children).name.should.eql('p');
-    });
-
-    it('.addChildren("<div><h1>ola</h1><p>falou</p></div>")', function () {
-        var file = new DomFile(__dirname + '/html-files/index.html');
+        var notified = false;
 
         var htmlString = [
             '<div>',
@@ -41,7 +39,12 @@ describe('DomElement', function () {
 
         var element = file.getElementByXPath('/html/body/div');
 
-        element.addChildren(htmlString);
+        file.on('update', function (data) {
+            data.element.uuid.should.eql(element.uuid);
+            notified = true;
+        });
+
+        element.addChild(htmlString);
 
         var div = _.last(element.children);
         var h1  = _.first(div.children);
@@ -50,12 +53,14 @@ describe('DomElement', function () {
         div.name.should.eql('div');
         h1.name.should.eql('h1');
         p.name.should.eql('p');
-
+        notified.should.be.true;
     });
 
-    it('.addChildren(element, { before: referenceElement })', function (done) {
+    it('.addChild(element, { before: referenceElement })', function (done) {
 
         var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var notified = false;
 
         var refElementPromise = file.getElementByXPath('/html/body/div/h2');
         var parElementPromise = file.getElementByXPath('/html/body/div');
@@ -66,7 +71,12 @@ describe('DomElement', function () {
                 var parent  = elements[1];
                 var reference = elements[0];
 
-                parent.addChildren('<div id="teste"></div>', {
+                file.on('update', function (data) {
+                    data.element.uuid.should.eql(parent.uuid);
+                    notified = true;
+                });
+
+                parent.addChild('<div id="teste"></div>', {
                     before: reference,
                 });
 
@@ -78,19 +88,27 @@ describe('DomElement', function () {
                 });
 
                 addedElIndex.should.eql(parent._getChildIndex(reference) - 1);
+                notified.should.be.true;
 
                 done();
             })
             .done();
     });
 
-    it('.addChildren(elements, { after: referenceElement })', function () {
+    it('.addChild(elements, { after: referenceElement })', function () {
         var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var notified = false;
 
         var parent = file.getElementByXPath('/html/body/div');
         var reference = file.getElementByXPath('/html/body/div/h1');
 
-        parent.addChildren('<a id="teste"></a>', {
+        file.on('update', function (data) {
+            data.element.uuid.should.eql(parent.uuid);
+            notified = true;
+        });
+
+        parent.addChild('<a id="teste"></a>', {
             after: reference,
         });
 
@@ -102,6 +120,17 @@ describe('DomElement', function () {
         });
 
         addedElementIndex.should.eql(parent._getChildIndex(reference) + 1);
+        notified.should.be.true;
+    });
+
+    it('.addChild(<object>) should throw TypeError', function () {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var element = file.getElementByXPath('/html/body/div');
+
+        var insert = {type: 'tag', name: 'div'};
+
+        element.addChild.bind(element, insert).should.throw(TypeError);
     });
 
     it('.removeChildren(elements)', function () {
