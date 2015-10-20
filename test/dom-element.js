@@ -1,5 +1,5 @@
 'use strict';
-require('chai').should();
+var should = require('chai').should();
 var _      = require('lodash');
 var q      = require('q');
 
@@ -133,7 +133,54 @@ describe('DomElement', function () {
         element.addChild.bind(element, insert).should.throw(TypeError);
     });
 
-    it('.removeChildren(elements)', function () {
+    it('.removeChild(element)', function () {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var notified = false;
+        file.on('update', function (data) {
+            data.element.uuid.should.eql(parent.uuid);
+            notified = true;
+        });
+
+        var parent = file.getElementByXPath('/html/body');
+        var element = file.getElementByXPath('/html/body/h1');
+
+        var oldLength = parent.children.length;
+
+        parent.removeChild(element);
+
+        var removed = file.getElementByXPath('/html/body/h1');
+        should.not.exist(removed);
+        parent.children.length.should.eql(oldLength - 1);
+        notified.should.eql(true);
+    });
+
+    it('.removeChild(!<object>) should throw TypeError', function () {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var element = file.getElementByXPath('/html/body/div');
+
+        element.removeChild.bind('error').should.throw(TypeError);
+    });
+
+    it('.removeChild() -> Error if element is not a child', function () {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var element = file.getElementByXPath('/html/body/div');
+        var notChild = file.getElementByXPath('/html/body/h1');
+
+        element.removeChild.bind(notChild).should.throw(Error);
+    });
+
+    it('.removeSelf()', function () {
+        var file = new DomFile(__dirname + '/html-files/index.html');
+
+        var element = file.getElementByXPath('/html/body/h1');
+        var parent = element.parent;
+
+        element.removeSelf();
+
+        parent.children.should.not.contain(element);
     });
 
     it('All tag elements should have UUIDs', function (done) {
